@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-glens",
   "description": "a google lens api invoker",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -15,8 +15,10 @@
     "koishi",
     "plugin"
   ],
-  "devDependencies": {},
   "peerDependencies": {
     "koishi": "^4.18.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
   }
 }
