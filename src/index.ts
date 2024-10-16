@@ -5,18 +5,32 @@ import axios from "axios";
 export const name = 'glens'
 
 export interface Config {
-  endpoint: string
+  endpoint: string,
+  supportCrop: boolean
 }
 
 export const Config: Schema<Config> = Schema.object({
   endpoint: Schema.string().description("请输入PyGlens服务端地址").required(),
+  supportCrop: Schema.boolean().description("是否允许传入裁切参数").default(true),
 })
 
 export function apply(ctx: Context, config: Config) {
-  ctx.command('谷歌识图').action(async ({session, options}, ...cntArr) => {
+  ctx.command('谷歌识图', '裁切参数：0 yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边） 2 不裁切').action(async ({session, options}, ...cntArr) => {
     let quoteMessage: string | h[];
     let imageURL: string | Buffer | URL | ArrayBufferLike;
     let sessionContent: string = session.content;
+    let cropType = 2;
+    if (config.supportCrop) {
+      cropType = 1
+      if (cntArr.length > 1) {
+        const inputCropType = cntArr[0].trim();
+        if (inputCropType === "0") {
+          cropType = 0
+        } else if (inputCropType === "2") {
+          cropType = 2
+        }
+      }
+    }
     try {
       quoteMessage = session.quote.content;
       imageURL = h.select(quoteMessage, "img").map((a) => a.attrs.src)[0];
@@ -34,7 +48,11 @@ export function apply(ctx: Context, config: Config) {
     if (!imageURL) {
       return "请使用正确的图片内容";
     }
-    const res: any = await axios.post(`${config.endpoint}/glens`, {'pic_url': imageURL as string}, {
+    const reqData = {'pic_url': imageURL as string, 'crop_type': cropType};
+    if (cropType != 2) {
+      reqData['need_crop'] = 1;
+    }
+    const res: any = await axios.post(`${config.endpoint}/glens`, reqData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -59,5 +77,6 @@ export function apply(ctx: Context, config: Config) {
 
 export const usage = `
 PyGlens项目地址：https://github.com/flymyd/pyglens \n
-配合javbus-new插件食用体验更佳
+配合javbus-new插件食用体验更佳 \n
+裁切参数：0 yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边） 2 不裁切
 `

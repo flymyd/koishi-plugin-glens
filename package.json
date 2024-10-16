@@ -1,9 +1,13 @@
 {
   "name": "koishi-plugin-glens",
   "description": "a google lens api invoker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flymyd/koishi-plugin-glens"
+  },
   "files": [
     "lib",
     "dist"
