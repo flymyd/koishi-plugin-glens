@@ -15,7 +15,7 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 export function apply(ctx: Context, config: Config) {
-  ctx.command('谷歌识图', '裁切参数：0 yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边） 2 不裁切').action(async ({session, options}, ...cntArr) => {
+  ctx.command('谷歌识图', '裁切参数：0 yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边，默认） 2 不裁切。对于gif图，请附加参数2或原图。').action(async ({session, options}, ...cntArr) => {
     let quoteMessage: string | h[];
     let imageURL: string | Buffer | URL | ArrayBufferLike;
     let sessionContent: string = session.content;
@@ -24,9 +24,9 @@ export function apply(ctx: Context, config: Config) {
       cropType = 1
       if (cntArr.length > 1) {
         const inputCropType = cntArr[0].trim();
-        if (inputCropType === "0") {
+        if (inputCropType === "0" || inputCropType === "yolo") {
           cropType = 0
-        } else if (inputCropType === "2") {
+        } else if (inputCropType === "2" || inputCropType === "原图") {
           cropType = 2
         }
       }
@@ -78,5 +78,7 @@ export function apply(ctx: Context, config: Config) {
 export const usage = `
 PyGlens项目地址：https://github.com/flymyd/pyglens \n
 配合javbus-new插件食用体验更佳 \n
-裁切参数：0 yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边） 2 不裁切
+supportCrop 为true时，支持传入裁切参数。默认参数为1 \n
+裁切参数：0/yolo yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边，默认） 2/原图 不裁切\n
+对于gif图，请附加参数2或原图。
 `
