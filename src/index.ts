@@ -15,7 +15,7 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 export function apply(ctx: Context, config: Config) {
-  ctx.command('谷歌识图', '裁切参数：0 yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边，默认） 2 不裁切。对于gif图，请附加参数2或原图。').action(async ({session, options}, ...cntArr) => {
+  ctx.command('谷歌识图', '裁切参数：0/yolo yolov8识别裁切（目标检测） 1 opencv裁切（仅裁黑边，默认） 2/原图 不裁切。对于gif图，请附加参数2或原图。').action(async ({session, options}, ...cntArr) => {
     let quoteMessage: string | h[];
     let imageURL: string | Buffer | URL | ArrayBufferLike;
     let sessionContent: string = session.content;
